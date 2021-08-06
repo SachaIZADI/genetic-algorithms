@@ -18,6 +18,11 @@ You can call the following algorithms with the CLI interface :
 python -m algos --algorithm [continuous_optim|knapsack|one_max|tsp]
 ```
 
+For the TSP you can run a dedicated steamlit app via:
+```
+streamlit run tsp_streamlit_app.py 
+```
+
 ### OneMax problem
 
 The OneMax problem is the following (with i between 1 and 20):
