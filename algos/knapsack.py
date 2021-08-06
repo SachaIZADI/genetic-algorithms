@@ -71,7 +71,7 @@ class KnapSackPopulation(Population):
         )
 
 
-def solve():
+def solve_knapsack():
 
     tracking_statistics = []
 
@@ -110,5 +110,5 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    solve_knapsack()
 

@@ -128,7 +128,7 @@ def plot_candidate(candidate: TSPCandidate):
 
 
 
-def solve():
+def solve_tsp():
 
     tracking_statistics = []
 
@@ -166,4 +166,4 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    solve_tsp()

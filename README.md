@@ -13,6 +13,11 @@
   
 ## Implementations
 
+You can call the following algorithms with the CLI interface :
+```
+python -m algos --algorithm [continuous_optim|knapsack|one_max|tsp]
+```
+
 ### OneMax problem
 
 The OneMax problem is the following (with i between 1 and 20):

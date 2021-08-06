@@ -89,7 +89,7 @@ class ContinuousOptimPopulation(Population):
         )
 
 
-def solve():
+def solve_continuous_optim():
 
     tracking_statistics = []
     tracking_best_solution = []
@@ -141,4 +141,4 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    solve_continuous_optim()

@@ -53,7 +53,7 @@ class OneMaxPopulation(Population):
         )
 
 
-def solve():
+def solve_one_max():
 
     tracking_statistics = []
 
@@ -91,5 +91,5 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    solve_one_max()
 
