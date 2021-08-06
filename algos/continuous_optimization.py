@@ -40,7 +40,6 @@ class ContinuousOptimCandidate(Candidate):
         super().__init__()
         self.chromosomes = np.random.uniform(*BOUNDS, N_PARAMETERS)
         # For the sake of the exercise, try to start, far away from the solution
-        # self.chromosomes = np.random.uniform(BOUNDS[0], BOUNDS[0] + 7, N_PARAMETERS)
         self.chromosomes = np.random.uniform(BOUNDS[0], BOUNDS[0] + 7, N_PARAMETERS)
 
     @property
