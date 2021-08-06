@@ -1,31 +1,55 @@
 import pandas as pd
 import streamlit as st
 import pydeck
+from typing import List, Dict
 
 from data.tsp_data import get_tsp_data
+from algos.tsp import TSPPopulation, TSPCandidate
+
+
+N_ITERATIONS = 2000
+CITIES = get_tsp_data()
+
+
+def get_candidate_route_coordinates(candidate: TSPCandidate) -> List[Dict[str, float]]:
+
+    cities_ordered = CITIES.iloc[candidate.chromosomes]
+
+    route = [
+        *[
+            {
+                "start": (cities_ordered.iloc[i]["longitude"], cities_ordered.iloc[i]["latitude"]),
+                "end": (cities_ordered.iloc[i + 1]["longitude"], cities_ordered.iloc[i + 1]["latitude"]),
+            } for i in range(len(cities_ordered) - 1)
+        ],
+        {
+            "start": (cities_ordered.iloc[-1]["longitude"], cities_ordered.iloc[-1]["latitude"]),
+            "end": (cities_ordered.iloc[0]["longitude"], cities_ordered.iloc[0]["latitude"]),
+        }
+     ]
+
+    return route
 
 
 def main():
 
-    tsp_data = get_tsp_data()
-    distance = []
-
     st.title("Genetic algorithm for the Traveling Salesman Problem")
     launch_button = st.button("Launch algo")
+    progress_bar = st.progress(0)
     map = st.empty()
     chart = st.empty()
 
     map.pydeck_chart(pydeck.Deck(
         map_style='mapbox://styles/mapbox/light-v9',
         initial_view_state=pydeck.ViewState(
-            latitude=tsp_data["latitude"].mean(),
-            longitude=tsp_data["longitude"].mean(),
+            latitude=CITIES["latitude"].mean(),
+            longitude=CITIES["longitude"].mean(),
             zoom=2.7,
         ),
         layers=[
             pydeck.Layer(
                 "ScatterplotLayer",
-                data=tsp_data,
+                data=CITIES,
                 get_position=["longitude", "latitude"],
                 auto_highlight=True,
                 get_radius=50000,
@@ -35,43 +59,66 @@ def main():
         ],
     ))
 
-    chart.line_chart(distance)
+    tracking_statistics = []
+
+    population = TSPPopulation()
+
+    best_solution = min(population.candidates, key=lambda c: c.fitness_score)
+    best_score = best_solution.fitness_score
+    tracking_statistics.append(population.statistics)
+
+    map.pydeck_chart(pydeck.Deck(
+        map_style='mapbox://styles/mapbox/light-v9',
+        initial_view_state=pydeck.ViewState(
+            latitude=CITIES["latitude"].mean(),
+            longitude=CITIES["longitude"].mean(),
+            zoom=2.7,
+        ),
+        layers=[
+            pydeck.Layer(
+                "ScatterplotLayer",
+                data=CITIES,
+                get_position=["longitude", "latitude"],
+                auto_highlight=True,
+                get_radius=50000,
+                get_fill_color=[180, 0, 200, 140],
+                pickable=True
+            ),
+            pydeck.Layer(
+                "LineLayer",
+                get_candidate_route_coordinates(best_solution),
+                get_source_position="start",
+                get_target_position="end",
+                get_color=[255, 0, 0],
+                coverage=1,
+                width_scale=3,
+            )
+        ],
+    ))
 
     if launch_button:
 
-        for i in range(10):
-            import time
-            time.sleep(1)
+        for i in range(N_ITERATIONS):
+            progress_bar.progress((i + 1) / N_ITERATIONS)
+            population.evolve()
 
-            tsp_data = tsp_data.sample(frac=1)
+            tracking_statistics.append(population.statistics)
 
-            test = [
-                {
-                    "start": (tsp_data.iloc[i]["longitude"], tsp_data.iloc[i]["latitude"]),
-                    "end": (tsp_data.iloc[i+1]["longitude"], tsp_data.iloc[i+1]["latitude"]),
-                } for i in range(len(tsp_data) - 1)
-            ]
-            test.append(
-                {
-                    "start": (tsp_data.iloc[-1]["longitude"], tsp_data.iloc[-1]["latitude"]),
-                    "end": (tsp_data.iloc[0]["longitude"], tsp_data.iloc[0]["latitude"]),
-                }
-            )
-
-            distance.append((i ** 2, - i ** 3))
-            df = pd.DataFrame(distance, columns=["min", "max"])
+            if population.candidates[0].fitness_score < best_score:
+                best_solution = population.candidates[0]
+                best_score = best_solution.fitness_score
 
             map.pydeck_chart(pydeck.Deck(
                 map_style='mapbox://styles/mapbox/light-v9',
                 initial_view_state=pydeck.ViewState(
-                    latitude=tsp_data["latitude"].mean(),
-                    longitude=tsp_data["longitude"].mean(),
+                    latitude=CITIES["latitude"].mean(),
+                    longitude=CITIES["longitude"].mean(),
                     zoom=2.7,
                 ),
                 layers=[
                     pydeck.Layer(
                         "ScatterplotLayer",
-                        data=tsp_data,
+                        data=CITIES,
                         get_position=["longitude", "latitude"],
                         auto_highlight=True,
                         get_radius=50000,
@@ -80,56 +127,62 @@ def main():
                     ),
                     pydeck.Layer(
                         "LineLayer",
-                        test,
+                        get_candidate_route_coordinates(
+                            population.candidates[len(population.candidates) // 2]
+                        ),
+                        get_source_position="start",
+                        get_target_position="end",
+                        get_color=[169, 169, 169],
+                        coverage=1,
+                        width_scale=1,
+                    ),
+                    pydeck.Layer(
+                        "LineLayer",
+                        get_candidate_route_coordinates(best_solution),
                         get_source_position="start",
                         get_target_position="end",
                         get_color=[255, 0, 0],
                         coverage=1,
                         width_scale=3,
-                    )
+                    ),
                 ],
             ))
 
-            chart.line_chart(df)
+            tracking_statistics_df = pd.DataFrame(
+                tracking_statistics,
+                columns=["min", "mean", "median", "max"]
+            )
 
-# TODO : work-in-progress
-"""
-def solve_tsp():
+            chart.line_chart(tracking_statistics_df)
 
-    tracking_statistics = []
-
-    print(f"Iteration 0 / {N_ITERATIONS}")
-
-    population = TSPPopulation()
-    print(population.statistics)
-
-    best_solution = min(population.candidates, key=lambda c: c.fitness_score)
-    best_score = best_solution.fitness_score
-    tracking_statistics.append(population.statistics)
-
-    for i in range(N_ITERATIONS):
-        print(f"Iteration {i + 1} / {N_ITERATIONS}")
-        population.evolve()
-
-        print(population.statistics)
-        tracking_statistics.append(population.statistics)
-
-        if population.candidates[0].fitness_score < best_score:
-            best_solution = population.candidates[0]
-            best_score = best_solution.fitness_score
-
-    tracking_statistics = np.array(tracking_statistics)
-    x_list = np.arange(len(tracking_statistics))
-    plt.plot(x_list, tracking_statistics[:, 0], label="min")
-    plt.plot(x_list, tracking_statistics[:, 1], label="mean")
-    plt.plot(x_list, tracking_statistics[:, 2], label="median")
-    plt.plot(x_list, tracking_statistics[:, 3], label="max")
-
-    plt.legend()
-    plt.show()
-
-    plot_candidate(best_solution)
-"""
+        map.pydeck_chart(pydeck.Deck(
+            map_style='mapbox://styles/mapbox/light-v9',
+            initial_view_state=pydeck.ViewState(
+                latitude=CITIES["latitude"].mean(),
+                longitude=CITIES["longitude"].mean(),
+                zoom=2.7,
+            ),
+            layers=[
+                pydeck.Layer(
+                    "ScatterplotLayer",
+                    data=CITIES,
+                    get_position=["longitude", "latitude"],
+                    auto_highlight=True,
+                    get_radius=50000,
+                    get_fill_color=[180, 0, 200, 140],
+                    pickable=True
+                ),
+                pydeck.Layer(
+                    "LineLayer",
+                    get_candidate_route_coordinates(best_solution),
+                    get_source_position="start",
+                    get_target_position="end",
+                    get_color=[255, 0, 0],
+                    coverage=1,
+                    width_scale=3,
+                ),
+            ],
+        ))
 
 
 if __name__ == "__main__":

@@ -23,6 +23,8 @@ For the TSP you can run a dedicated steamlit app via:
 streamlit run tsp_streamlit_app.py 
 ```
 
+![streamlit_app](media/streamlit_tsp.gif)
+
 ### OneMax problem
 
 The OneMax problem is the following (with i between 1 and 20):

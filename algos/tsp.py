@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
 
-MUTATION_RATE = 0.1
+MUTATION_RATE = 0.5
 CROSSOVER_RATE = 0.9
 
-POPULATION_SIZE = 200
-ELITISM_RATE = 0.2
-N_ITERATIONS = 1000
+POPULATION_SIZE = 100
+ELITISM_RATE = 0.6
+N_ITERATIONS = 2000
 
 CITIES = get_tsp_data()
 
@@ -32,9 +32,11 @@ class TSPCandidate(Candidate):
 
     def __init__(self):
         super().__init__()
-        self.chromosomes = np.arange(len(CITIES))
-        # TODO : force start with a city to break symmetries
-        np.random.shuffle(self.chromosomes)
+        # Force start with a city to break some symmetries in the solution space exploration
+        _chromosomes = np.arange(1, len(CITIES))
+        np.random.shuffle(_chromosomes)
+        _chromosomes = np.concatenate(([0], _chromosomes))
+        self.chromosomes = _chromosomes
 
     @property
     def fitness_score(self) -> float:
@@ -49,15 +51,15 @@ class TSPCandidate(Candidate):
             return self
 
         elif np.random.rand() > 0.5:
-            swap = np.random.choice(np.arange(len(CITIES)), size=2, replace=False)
+            swap = np.random.choice(np.arange(1, len(CITIES)), size=2, replace=False)
             self.chromosomes[swap[0]], self.chromosomes[swap[1]] = self.chromosomes[swap[1]], self.chromosomes[swap[0]]
 
         else:
-            old_position = np.random.randint(len(CITIES))
+            old_position = np.random.randint(1, len(CITIES))
             chromosome_to_insert = self.chromosomes[old_position]
             self.chromosomes = np.delete(self.chromosomes, old_position)
 
-            new_position = np.random.randint(len(CITIES) - 1)
+            new_position = np.random.randint(1, len(CITIES) - 1)
             self.chromosomes = np.insert(self.chromosomes, new_position, chromosome_to_insert)
 
     def crossover(self, other: "TSPCandidate", *kwargs) -> Tuple["TSPCandidate", "TSPCandidate"]:
@@ -71,7 +73,7 @@ class TSPCandidate(Candidate):
         if np.random.rand() > CROSSOVER_RATE:
             return children_1, children_2
 
-        crossover_positions = np.sort(np.random.choice(np.arange(len(CITIES)), size=2, replace=False))
+        crossover_positions = np.sort(np.random.choice(np.arange(1, len(CITIES)), size=2, replace=False))
 
         for i in range(*crossover_positions):
 
@@ -125,7 +127,6 @@ def plot_candidate(candidate: TSPCandidate):
         )
 
     plt.show()
-
 
 
 def solve_tsp():
