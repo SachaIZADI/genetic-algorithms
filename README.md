@@ -77,16 +77,13 @@ finding the global minimum.
 ### Travelling salesman problem
 
 The TSP problem is to minimize the total distance to do a round trip visiting each capital of the US.
-We see that the algorithm progressively decreases the objective function but does not converge yet to the global 
-solution.
+We see that the algorithm progressively decreases the objective function but seems to converge to a local optimum.
+
+The solution found has still many defaults (esp. crossing roads) but it mostly has "continuous" paths. 
+To improve our algorithm we should rewrite the model formulation (e.g. breaking the symmetries) and create other
+mutation/crossover strategies to make the solution space exploration more efficient.
 
 ![tsp_solution](media/tsp.png)
-
-The solution found by our algorithm has still many defaults (esp. crossing roads) but we start to see some connected
-paths. To improve our algorithm we should rewrite the model formulation (e.g. breaking the symmetries) to make the
-solution space exploration more efficient.
-
-![tsp_solution](media/tsp_2.png)
 
 ![tsp_solution_2](media/tsp_solution.jpeg)
 
