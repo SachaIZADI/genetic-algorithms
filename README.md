@@ -88,5 +88,27 @@ mutation/crossover strategies to make the solution space exploration more effici
 ![tsp_solution_2](media/tsp_solution.jpeg)
 
 
+## Bonus part - Ant colony optimization
+
+To go a bit further in the exploration of bio-inspired optimization techniques I also implemented some ant colony
+optimization algorithms.
+
+The Wikipedia article on [ACO](https://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) is a good introduction 
+to the subject.
+
+### Travelling salesman problem
+
+ACO techniques apply to optimization problems that can be formulated as finding the shortest path on a weighted graph,
+which is exactly the TSP formulation.
+
+ACO gave better results, and in a much smaller amount of time, than the genetic algorithm implemented earlier on. 
+Especially the tour looks quite cleaner than the genetic algorithm which had several inefficient back-and-forth.
+
+![aco_tsp_solution_2](media/aco_tsp.png)
+
+![aco_tsp_solution](media/aco_tsp_map.png)
+
+![tsp_solution_2](media/tsp_solution.jpeg)
+
 
 

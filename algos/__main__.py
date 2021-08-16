@@ -5,6 +5,7 @@ from algos.one_max import solve_one_max
 from algos.knapsack import solve_knapsack
 from algos.continuous_optimization import solve_continuous_optim
 from algos.tsp import solve_tsp
+from algos.ant_colony_tsp import solve_tsp_aco
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,6 +14,7 @@ SUPPORTED_ALGOS = [
     ("knapsack", solve_knapsack),
     ("one_max", solve_one_max),
     ("tsp", solve_tsp),
+    ("tsp_aco", solve_tsp_aco),
 ]
 
 
