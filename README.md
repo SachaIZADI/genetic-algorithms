@@ -23,42 +23,42 @@ For the TSP you can run a dedicated steamlit app via:
 streamlit run tsp_streamlit_app.py 
 ```
 
-![streamlit_app](media/streamlit_tsp.gif)
+<img src="media/streamlit_tsp.gif" alt="streamlit_app" width="500"/>
 
 ### OneMax problem
 
 The OneMax problem is the following (with i between 1 and 20):
 
-![one_max_equation](media/one_max_equation.png)
+<img src="media/one_max_equation.png" width="200"/>
 
 which is obviously maximised for `a_i = 1` with `maximum = 20`.
 
 We see that the algorithm progressively decreases the objective function and converges to the solution.
 
-![one_max_solution](media/one_max.png)
+<img src="media/one_max.png" width="500"/>
 
 ### Knapsack problem
 
 The Knapsack problem problem is the following:
 
-![knapsack_equation](media/knapsack_equation.png)
+<img src="media/knapsack_equation.png" width="300"/>
 
 To handle the constraint on the capacity, we transform the objective function such that it is equal to zero if the
 constraint is not satisfied.
 
-![knapsack_equation](media/knapsack_equation_2.png)
+<img src="media/knapsack_equation_2.png" width="350"/>
 
 We see that the algorithm progressively decreases the objective function and converges to the solution, but it keeps
 exploring parts of the solution space where the constraint is not verified.
 
-![knapsack_solution](media/knapsack.png)
+<img src="media/knapsack.png" width="500"/>
 
 ### Continuous optimization
 
 The problem is to find the (global) minimum of the Rastrigni function. It has a lot of local minimum which makes the
 problem interesting.
 
-![rastrigni_equation](media/Rastrigin_function.png)
+<img src="media/Rastrigin_function.png" width="500"/>
 
 For the crossover operation, I used the trick presented in https://www.whitman.edu/Documents/Academics/Mathematics/2014/carrjk.pdf
 
@@ -70,9 +70,9 @@ x_child_2 = (1 − β) * x_parent_2 + β * x_parent_1
 We see that the algorithm progressively decreases the objective function and explores several local minima until
 finding the global minimum.
 
-![continuous_optim_solution](media/continuous_optim.png)
+<img src="media/continuous_optim.png" width="500"/>
 
-![continuous_optim_solution_2](media/continuous_optim_2.png)
+<img src="media/continuous_optim_2.png" width="500"/>
 
 ### Travelling salesman problem
 
@@ -83,9 +83,9 @@ The solution found has still many defaults (esp. crossing roads) but it mostly h
 To improve our algorithm we should rewrite the model formulation (e.g. breaking the symmetries) and create other
 mutation/crossover strategies to make the solution space exploration more efficient.
 
-![tsp_solution](media/tsp.png)
+<img src="media/tsp.png" width="500"/>
 
-![tsp_solution_2](media/tsp_solution.jpeg)
+<img src="media/tsp_solution.jpeg" width="350"/>
 
 
 ## Bonus part - Ant colony optimization
@@ -104,11 +104,8 @@ which is exactly the TSP formulation.
 ACO gave better results, and in a much smaller amount of time, than the genetic algorithm implemented earlier on. 
 Especially the tour looks quite cleaner than the genetic algorithm which had several inefficient back-and-forth.
 
-![aco_tsp_solution_2](media/aco_tsp.png)
+<img src="media/aco_tsp.png" width="500"/>
 
-![aco_tsp_solution](media/aco_tsp_map.png)
+<img src="media/aco_tsp_map.png" width="500"/>
 
-![tsp_solution_2](media/tsp_solution.jpeg)
-
-
-
+<img src="media/tsp_solution.jpeg" width="350"/>
